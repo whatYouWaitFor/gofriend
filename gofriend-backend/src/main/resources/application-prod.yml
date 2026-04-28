@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: gofriend-backend
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/yupao
+    username: root
+    password: root
+  session: 86400
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+mybatis-plus:
+  configuration:
+    # MyBatis 驼峰命名
+    map-underscore-to-camel-case: true
+  # 配置全局的逻辑删除
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除字段名(isDelete为实体类属性名称)
+      logic-delete-value: 1 # 逻辑已删除值。可选，默认值为 1
+      logic-not-delete-value: 0 # 逻辑未删除值。可选，默认值为 0
