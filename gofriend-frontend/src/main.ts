@@ -11,7 +11,7 @@ import {
     Button, NavBar, Icon, Tabbar, TabbarItem, Search, Divider, Col, Row,
     Tag, CellGroup, Cell, TreeSelect, Empty, Card, Skeleton, Form, Field,
     Tab, Tabs, Dialog, Popup, RadioGroup, Radio, Stepper, PickerGroup, DatePicker,
-    TimePicker
+    TimePicker, Switch, FloatingBubble, PullRefresh
 } from 'vant';
 // 2. 引入组件样式
 import 'vant/lib/index.css';
@@ -49,6 +49,9 @@ app.use(Stepper);
 app.use(PickerGroup);
 app.use(DatePicker);
 app.use(TimePicker);
+app.use(Switch);
+app.use(FloatingBubble);
+app.use(PullRefresh);
 
 app.mount('#app')
 

@@ -1,17 +1,30 @@
 <template>
     <div id="teamAddPage">
-        <van-form @submit="onSubmit">
+        <van-form @submit="onSubmit" required="auto">
             <van-cell-group inset>
                 <van-field v-model="addTeamData.name" name="name" label="队伍名" placeholder="请输入队伍名"
                     :rules="[{ required: true, message: '请输入队伍名' }]" />
                 <van-field v-model="addTeamData.description" rows="4" autosize label="队伍描述" type="textarea"
                     placeholder="请输入队伍描述" />
-                <van-field is-link readonly name="datetimePicker" label="过期时间"
+                <!-- <van-field is-link readonly name="datetimePicker" label="过期时间"
                     :placeholder="addTeamData.expireTime ?? '点击选择过期时间'" @click="showPicker = true" />
                 <van-popup v-model:show="showPicker" position="bottom">
                     <van-datetime-picker v-model="addTeamData.expireTime" @confirm="showPicker = false" type="datetime"
                         title="请选择过期时间" :min-date="minDate" />
+                </van-popup> -->
+
+                <van-field is-link readonly name="datetimePicker" label="过期时间"
+                    :placeholder="addTeamData.expireTime ?? '点击选择过期时间'"
+                    :rules="[{ required: true, message: '请选择过期时间' }]" @click="showPicker = true"
+                    v-model="addTeamData.expireTime" />
+                <van-popup v-model:show="showPicker" position="bottom">
+                    <van-picker-group title="请选择过期时间" :tabs="['选择日期', '选择时间']" next-step-text="下一步" @confirm="onConfirm"
+                        @cancel="showPicker = false">
+                        <van-date-picker v-model="selectDate" :min-date="minDate" />
+                        <van-time-picker v-model="selectTime" />
+                    </van-picker-group>
                 </van-popup>
+
                 <van-field name="radio" label="队伍状态">
                     <template #input>
                         <van-radio-group v-model="addTeamData.status" direction="horizontal">
@@ -47,25 +60,30 @@ const route = useRoute();
 const showPicker = ref(false);
 
 const minDate = new Date();
+const selectDate = ref([]);
+const selectTime = ref([]);
 
-const id = route.query.id;
+const teamId = route.query.id;
 
 // 需要用户填写的表单数据
 const addTeamData = ref({})
 
 // 获取之前的队伍信息
 onMounted(async () => {
-    if (id <= 0) {
+    if (teamId <= 0) {
         showFailToast('加载队伍失败');
         return;
     }
     const res = await myAxios.get("/team/get", {
         params: {
-            id,
+            teamId,
         }
     });
     if (res?.code === 0) {
         addTeamData.value = res.data;
+        addTeamData.value.status = String(addTeamData.value.status);
+        selectDate.value = res.data.expireTime.split(' ')[0].split('-');
+        selectTime.value = res.data.expireTime.split(' ')[1].split(':');
     } else {
         showFailToast('加载队伍失败，请刷新重试');
     }
@@ -79,7 +97,7 @@ const onSubmit = async () => {
         status: Number(addTeamData.value.status)
     }
     // todo 前端参数校验
-    const res = await myAxios.post("/team/update", postData);
+    const res = await myAxios.patch("/team/update", postData);
     if (res?.code === 0 && res.data) {
         showSuccessToast('更新成功');
         router.push({
@@ -89,6 +107,12 @@ const onSubmit = async () => {
     } else {
         showFailToast('更新失败');
     }
+}
+
+
+const onConfirm = () => {
+    addTeamData.value.expireTime = selectDate.value.join('-') + " " + selectTime.value.join(':');
+    showPicker.value = false;
 }
 </script>
 

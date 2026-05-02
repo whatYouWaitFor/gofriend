@@ -10,7 +10,7 @@ import { useRoute } from 'vue-router';
 import myAxios from '@/plugins/myAxios';
 //import qs from 'qs';
 import UserCardList from '@/components/UserCardList.vue';
-import { UserType } from '@/models/user';
+import { type UserType } from '@/models/user';
 
 const userList = ref([]);
 

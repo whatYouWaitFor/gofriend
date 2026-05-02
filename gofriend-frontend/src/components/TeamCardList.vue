@@ -54,6 +54,8 @@ import { useRouter } from 'vue-router';
 import bm from '@/assets/bm.png';
 
 const router = useRouter();
+const emit = defineEmits(['getList']);
+
 
 interface TeamCardListProps {
     teamList: TeamType[];
@@ -102,8 +104,9 @@ const doJoinTeam = async () => {
     if (res?.code === 0) {
         showSuccessToast('加入成功');
         doJoinCancel();
+        emit('getList');
     } else {
-        showFailToast('加入失败' + (res.description ? `，${res.description}` : ''));
+        showFailToast('加入失败' + (res.message ? `，${res.message}` : ''));
     }
 }
 
@@ -130,8 +133,9 @@ const doQuitTeam = async (id: number) => {
     });
     if (res?.code === 0) {
         showSuccessToast('操作成功');
+        emit('getList');
     } else {
-        showFailToast('操作失败' + (res.description ? `，${res.description}` : ''));
+        showFailToast('操作失败' + (res.message ? `，${res.message}` : ''));
     }
 }
 
@@ -145,8 +149,9 @@ const doDeleteTeam = async (id: number) => {
     });
     if (res?.code === 0) {
         showSuccessToast('操作成功');
+        emit('getList');
     } else {
-        showFailToast('操作失败' + (res.description ? `，${res.description}` : ''));
+        showFailToast('操作失败' + (res.message ? `，${res.message}` : ''));
     }
 }
 

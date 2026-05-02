@@ -70,7 +70,7 @@ const activeIds = ref([]);
 const activeIndex = ref(0);
 
 // 移除标签
-const doClose = (tag) => {
+const doClose = (tag: string) => {
     activeIds.value = activeIds.value.filter(item => {
         return item !== tag;
     });

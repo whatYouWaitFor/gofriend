@@ -6,8 +6,8 @@
             <van-tab title="加密" name="private" />
         </van-tabs>
         <div style="margin-bottom:16px" />
-        <van-button class="add-button" type="primary" icon="plus" @click="toAddTeam" />
-        <TeamCardList :teamList="teamList" />
+        <van-floating-bubble :gap="{x: 15, y: 55}" icon="plus" @click="toAddTeam" />
+        <TeamCardList :teamList="teamList" @getList="getTeamList" />
         <van-empty v-if="teamList?.length < 1" description="暂无队伍" />
     </div>
 

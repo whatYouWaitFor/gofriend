@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { UserType } from "../models/user";
+import { type UserType } from "@/models/user";
 
 interface UserCardListProps {
     userList: UserType[];

@@ -1,8 +1,5 @@
-import { UserType } from './user';
+import type { UserType } from './user';
 
-/**
- * 团队类型
- */
 export type TeamType = {
     id: number;
     name: string;
@@ -10,10 +7,11 @@ export type TeamType = {
     expireTime?: Date;
     maxNum: number;
     password?: string,
-    // todo 定义枚举值类型，更规范
     status: number;
     createTime: Date;
     updateTime: Date;
     createUser?: UserType;
     hasJoinNum?: number;
+    userId?: number;
+    hasJoin?: boolean;
 }

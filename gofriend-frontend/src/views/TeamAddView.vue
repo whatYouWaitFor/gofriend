@@ -1,36 +1,26 @@
 <template>
     <div id="teamAddPage">
-        <van-form @submit="onSubmit">
+        <van-form @submit="onSubmit" required="auto">
             <van-cell-group inset>
                 <van-field v-model="addTeamData.name" name="name" label="队伍名" placeholder="请输入队伍名"
                     :rules="[{ required: true, message: '请输入队伍名' }]" />
                 <van-field v-model="addTeamData.description" rows="4" autosize label="队伍描述" type="textarea"
                     placeholder="请输入队伍描述" />
-                <!--<van-field is-link readonly name="datetimePicker" label="过期时间"
-                    :placeholder="addTeamData.expireTime ?? '点击选择过期时间'" @click="showPicker = true" />
-                <van-popup v-model:show="showPicker" position="bottom">
-                    <van-datetime-picker v-model="addTeamData.expireTime" @confirm="showPicker = false" type="datetime"
-                        title="请选择过期时间" :min-date="minDate" />
-
-
-                </van-popup> -->
                 <!-- <van-picker-group title="预约日期" :tabs="['选择日期', '选择时间']" @confirm="onConfirm" @cancel="onCancel">
                     <van-date-picker v-model="addTeamData.expireTime" :min-date="minDate" />
                     <van-time-picker v-model="addTeamData.expireTime" />
                 </van-picker-group> -->
 
-                <van-field is-link readonly name="datetimePicker" label="过期时间"
-                    :placeholder="currentDate[0] + '-' + currentDate[1] + '-' + currentDate[2] + ' ' + currentTime[0] + ':' + currentTime[1] ?? '点击选择过期时间'"
-                    @click="showPicker = true" />
+                <van-field is-link readonly name="datetimePicker" label="过期时间" :placeholder="'点击选择过期时间'"
+                    :rules="[{ required: true, message: '请选择过期时间' }]" @click="showPicker = true"
+                    v-model="selectDateTime" />
                 <van-popup v-model:show="showPicker" position="bottom">
                     <van-picker-group title="请选择过期时间" :tabs="['选择日期', '选择时间']" next-step-text="下一步" @confirm="onConfirm"
-                        @cancel="onCancel">
+                        @cancel="showPicker = false">
                         <van-date-picker v-model="currentDate" :min-date="minDate" />
                         <van-time-picker v-model="currentTime" />
                     </van-picker-group>
                 </van-popup>
-
-
 
                 <van-field name="stepper" label="最大人数">
                     <template #input>
@@ -79,17 +69,14 @@ const initFormData = {
 
 const minDate = new Date();
 
-const currentDate = ref(['2022', '06', '01']);
+const currentDate = ref(['2026', '06', '01']);
 const currentTime = ref(['12', '00']);
+const selectDateTime = ref('');
 
 const onConfirm = () => {
     showPicker.value = false
-    showSuccessToast(currentDate.value.join('-') + " " + currentTime.value.join(':'));
+    selectDateTime.value = currentDate.value.join('-') + " " + currentTime.value.join(':');
 }
-
-
-
-const onCancel = () => { showPicker.value = false }
 
 // 需要用户填写的表单数据
 const addTeamData = ref({ ...initFormData })
@@ -98,6 +85,7 @@ const addTeamData = ref({ ...initFormData })
 const onSubmit = async () => {
     const postData = {
         ...addTeamData.value,
+        expireTime: selectDateTime.value,
         status: Number(addTeamData.value.status)
     }
     // todo 前端参数校验

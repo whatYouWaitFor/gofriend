@@ -1,5 +1,5 @@
 <template>
-    <van-nav-bar title="标题" left-text="返回" left-arrow @click-left="onClickLeft" @click-right="onClickRight">
+    <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" @click-right="onClickRight">
         <template #right>
             <van-icon name="search" size="18" />
         </template>
@@ -17,9 +17,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter();
+
+const title = ref('伙伴匹配');
+
+watch(() => router.currentRoute.value.name, (newVal) => {
+    title.value = String(newVal || '伙伴匹配');
+});
 
 const onClickLeft = () => history.back();
 

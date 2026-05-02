@@ -1,7 +1,7 @@
 <template>
     <div id="teamPage">
         <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch" />
-        <TeamCardList :teamList="teamList" />
+        <TeamCardList :teamList="teamList" @getList="listTeam"/>
         <van-empty v-if="teamList?.length < 1" description="数据为空" />
     </div>
 </template>
@@ -11,8 +11,8 @@
 import { useRouter } from "vue-router";
 import TeamCardList from "../components/TeamCardList.vue";
 import { onMounted, ref } from "vue";
-import myAxios from "../plugins/myAxios";
-import { showFailToast, Toast } from "vant";
+import myAxios from "@/plugins/myAxios";
+import { showFailToast } from "vant";
 
 const router = useRouter();
 const searchText = ref('');
@@ -44,7 +44,7 @@ onMounted(() => {
     listTeam();
 })
 
-const onSearch = (val) => {
+const onSearch = (val: string) => {
     listTeam(val);
 };
 

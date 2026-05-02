@@ -21,9 +21,9 @@ const route = useRoute();
 const router = useRouter();
 
 const editUser = ref({
-    editKey: route.query.editKey,
-    currentValue: route.query.currentValue,
-    editName: route.query.editName,
+    editKey: route.query.editKey as string,
+    currentValue: (route.query.currentValue as string) || '',
+    editName: route.query.editName as string,
 })
 
 const onSubmit = async () => {

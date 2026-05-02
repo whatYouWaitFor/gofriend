@@ -2,7 +2,7 @@
     <div id="teamPage">
         <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch" />
         <van-button type="primary" @click="doJoinTeam">创建队伍</van-button>
-        <TeamCardList :teamList="teamList" />
+        <TeamCardList :teamList="teamList" @getList="listTeam"/>
         <van-empty v-if="teamList?.length < 1" description="数据为空" />
     </div>
 </template>
@@ -52,7 +52,7 @@ onMounted(() => {
     listTeam();
 })
 
-const onSearch = (val) => {
+const onSearch = (val: string) => {
     listTeam(val);
 };
 

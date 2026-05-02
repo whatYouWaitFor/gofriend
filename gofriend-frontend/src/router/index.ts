@@ -2,27 +2,33 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
-  //history: createWebHistory(import.meta.env.BASE_URL),
-  history: createWebHashHistory(),
+  history: createWebHistory(),
+  //history: createWebHashHistory(),
   routes: [
     {
       path: '/',
+      name: '首页',
       component: () => import('@/views/HomeView.vue'),
-    },
-    {
+    }, {
       path: '/team',
       name: '找队伍',
       component: () => import('@/views/TeamView.vue'),
-    },
-    {
+    }, {
       path: '/team/add',
       name: '创建队伍',
       component: () => import('@/views/TeamAddView.vue'),
-    },
-    {
+    }, {
       path: '/team/update',
       name: '修改队伍',
       component: () => import('@/views/TeamUpdateView.vue'),
+    }, {
+      path: '/user/team/create',
+      name: '我创建的队伍',
+      component: () => import('@/views/UserTeamCreateView.vue'),
+    }, {
+      path: '/user/team/join',
+      name: '我加入的队伍',
+      component: () => import('@/views/UserTeamJoinView.vue'),
     }, {
       path: '/search',
       name: '找伙伴',
