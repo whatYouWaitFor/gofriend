@@ -1,9 +1,16 @@
 package com.greg.gofriend.service;
 
+import com.greg.gofriend.common.DeleteRequest;
 import com.greg.gofriend.model.Team;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.greg.gofriend.model.User;
+import com.greg.gofriend.model.dto.TeamDto;
+import com.greg.gofriend.model.request.TeamJoinRequest;
+import com.greg.gofriend.model.request.TeamQuitRequest;
 import com.greg.gofriend.model.request.TeamUpdateRequest;
+import com.greg.gofriend.model.vo.TeamUserVo;
+
+import java.util.List;
 
 /**
 * @author dgj
@@ -27,4 +34,36 @@ public interface TeamService extends IService<Team> {
      * @return
      */
     boolean updateTeam(TeamUpdateRequest teamUpdateRequest, User loginUser);
+
+    /**
+     * 加入队伍
+     * @param teamJoinRequest
+     * @param loginUser
+     * @return
+     */
+    boolean joinTeam(TeamJoinRequest teamJoinRequest, User loginUser);
+
+    /**
+     * 退出队伍
+     * @param teamQuitRequest
+     * @param loginUser
+     * @return
+     */
+    boolean quitTeam(TeamQuitRequest teamQuitRequest, User loginUser);
+
+    /**
+     * 删除队伍
+     * @param id
+     * @param loginUser
+     * @return
+     */
+    boolean deleteTeam(long id, User loginUser);
+
+    /**
+     * 获取队伍列表
+     * @param teamDto
+     * @param isAdmin
+     * @return
+     */
+    List<TeamUserVo> listTeams(TeamDto teamDto, boolean isAdmin);
 }

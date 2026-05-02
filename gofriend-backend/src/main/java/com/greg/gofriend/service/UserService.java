@@ -72,4 +72,12 @@ public interface UserService extends IService<User> {
     boolean isAdmin(User loginUser);
 
     Page<User> recommendUser(long pageNum, long pageSize);
+
+    /**
+     * 获取匹配的用户
+     * @param num
+     * @param loginUser
+     * @return
+     */
+    List<User> matchUsers(long num, User loginUser);
 }

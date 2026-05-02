@@ -1,6 +1,7 @@
 package com.greg.gofriend.service;
 
 import com.greg.gofriend.model.User;
+import com.greg.gofriend.utils.AlgorithmuUtils;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ class UserServiceTest {
     @Resource
     private UserService userService;
 
+    // 线程池，最多65个线程，第66个拒绝，6-55个去排队，
     private ExecutorService executor = new ThreadPoolExecutor(5, 15, 1000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue(50));
 
     @Test
@@ -113,6 +115,9 @@ class UserServiceTest {
         System.out.println(stopWatch.getTotalTimeMillis());
     }
 
+    /**
+     * 并发异步批量新增
+     */
     @Test
     public void doConcurrencyInsertUsers() {
         StopWatch stopWatch = new StopWatch();
@@ -120,7 +125,7 @@ class UserServiceTest {
         int batchSize = 5000;
         int j = 0;
         List<CompletableFuture<Void>> futureList = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 65; i++) {
             List<User> userList = new ArrayList<>();
             while (true){
                 j++;
@@ -149,7 +154,21 @@ class UserServiceTest {
         }
         CompletableFuture.allOf(futureList.toArray(new CompletableFuture[]{})).join();
         stopWatch.stop();
-        // 9749
         System.out.println(stopWatch.getTotalTimeMillis());
+    }
+
+    @Test
+    public void testDistance(){
+        List<String> tagList1 = Arrays.asList("男", "python", "大一", "唱歌");
+        List<String> tagList2 = Arrays.asList("女", "python", "大一", "唱歌");
+        List<String> tagList3 = Arrays.asList("女", "java", "大一", "唱歌");
+        List<String> tagList4 = Arrays.asList("女", "java", "大三", "唱歌");
+
+        int i1 = AlgorithmuUtils.computeLevenshteinDistance(tagList1, tagList2);
+        int i2 = AlgorithmuUtils.computeLevenshteinDistance(tagList1, tagList3);
+        int i3 = AlgorithmuUtils.computeLevenshteinDistance(tagList1, tagList4);
+        System.out.println("i1========"+ i1);
+        System.out.println("i2========"+ i2);
+        System.out.println("i3========"+ i3);
     }
 }

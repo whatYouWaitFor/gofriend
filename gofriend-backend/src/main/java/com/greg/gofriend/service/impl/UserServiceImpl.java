@@ -4,25 +4,30 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.greg.gofriend.common.ErrorCode;
 import com.greg.gofriend.constant.UserConstant;
 import com.greg.gofriend.exception.BusinessException;
 import com.greg.gofriend.model.User;
 import com.greg.gofriend.service.UserService;
 import com.greg.gofriend.mapper.UserMapper;
+import com.greg.gofriend.utils.AlgorithmuUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -248,6 +253,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
         Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize), new QueryWrapper<>());
         return userPage;
+    }
+
+    @Override
+    public List<User> matchUsers(long num, User loginUser) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNotNull("tags");
+        queryWrapper.select("id", "tags");
+        List<User> userList = this.list(queryWrapper);
+
+        String tags = loginUser.getTags();
+        Gson gson = new Gson();
+        List<String> tagList = gson.fromJson(tags, List.class);
+
+        List<Pair<User, Long>> list = new ArrayList<>();
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userTags = user.getTags();
+            if (StringUtils.isBlank(userTags) || user.getId() == loginUser.getId()){
+                continue;
+            }
+            List<String> userTagList = gson.fromJson(userTags, List.class);
+            if (CollectionUtils.isEmpty(userTagList)){
+                continue;
+            }
+            /*List<String> userTagList = gson.fromJson(userTags, new TypeToken<List<String>>() {
+            }.getType());*/
+
+            long distance = AlgorithmuUtils.computeLevenshteinDistance(tagList, userTagList);
+            list.add(Pair.of(user, distance));
+        }
+        // 按编辑距离从小到大排序
+        List<Pair<User, Long>> topUserPairList = list.stream()
+                .sorted((a, b) -> (int)(a.getValue() - b.getValue()))
+                .limit(num)
+                .collect(Collectors.toList());
+        List<Long> userIdList = topUserPairList.stream().map(user -> user.getKey().getId()).collect(Collectors.toList());
+
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.in("id", userIdList);
+        Map<Long, User> collect = this.list(userQueryWrapper)
+                .stream()
+                .collect(Collectors.toMap(User::getId, user -> user));
+
+        ArrayList<User> finalUserList = new ArrayList<>();
+        for (Long userId : userIdList) {
+            finalUserList.add(collect.get(userId));
+        }
+        return finalUserList;
     }
 }
 
