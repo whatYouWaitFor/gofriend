@@ -6,7 +6,7 @@
   </van-cell>
   <van-pull-refresh v-model="loading" @refresh="onRefresh">
     <UserCardList :userList="userList" :loading="loading" />
-    <van-empty v-if="!userList || userList.length < 1" description="数据为空1" />
+    <van-empty v-if="!userList || userList.length < 1" description="数据为空14" />
   </van-pull-refresh>  
 
 </template>
