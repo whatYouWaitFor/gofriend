@@ -1,6 +1,6 @@
 <template>
     <UserCardList :userList="userList" :loading="false" />
-    <van-empty v-if="!userList || userList.length < 1" description="搜索结果为空 " />
+    <van-empty v-if="!userList || userList.length < 1" description="搜索结果为空" />
 </template>
 
 <script setup lang="ts">
